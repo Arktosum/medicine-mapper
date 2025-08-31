@@ -1,0 +1,40 @@
+{
+  "medicines": [
+    {
+      "id": "zTsIL4d9h1aFalAwzKo4e",
+      "name": "abroma augusta"
+    },
+    {
+      "id": "VfTMLK_cOgjki91GtmX9m",
+      "name": "Abroma augustas"
+    },
+    {
+      "id": "HdLtekq9hK7XbBLac12ao",
+      "name": "abroma augustass"
+    },
+    {
+      "id": "zfdeNQX_X2_msPFmT5bK5",
+      "name": "techniflora"
+    },
+    {
+      "id": "ShfuzGV17tJX40oST_O02",
+      "name": "penciflora"
+    }
+  ],
+  "illnesses": [
+    {
+      "id": "eF77D3r76DlvCgmVQeoEX",
+      "name": "Migraine"
+    }
+  ],
+  "links": [
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "illnessId": "eF77D3r76DlvCgmVQeoEX"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "illnessId": "eF77D3r76DlvCgmVQeoEX"
+    }
+  ]
+}
