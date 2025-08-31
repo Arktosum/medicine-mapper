@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Illness, Medicine, SearchResponse } from '../types';
+import { Illness, Link, Medicine, SearchResponse } from '../types';
 
 const base = 'http://localhost:3005/api'
 
@@ -83,6 +83,11 @@ export const api = createApi({
         search: builder.query<SearchResponse, { type: 'medicine' | 'illness'; q: string }>({
             query: ({ type, q }) => `/search?type=${type}&q=${encodeURIComponent(q)}`,
         }),
+        getLinks: builder.query<Link[], void>({
+            query: () => '/links',
+            providesTags: [{ type: 'Link', id: 'LIST' }],
+        }),
+
     }),
 })
 
@@ -97,4 +102,5 @@ export const {
     useDeleteIllnessMutation,
     useLinkMutation,
     useLazySearchQuery,
+    useGetLinksQuery
 } = api

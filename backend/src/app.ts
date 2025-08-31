@@ -148,6 +148,12 @@ app.delete('/api/illnesses/:id', (req, res) => {
     res.status(204).send()
 })
 
+app.get('/api/links', (req, res) => {
+    const db = readDB();
+    res.json(db.links);
+});
+
+
 const PORT = 3005
 app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`))
 

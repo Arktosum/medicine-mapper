@@ -4,13 +4,15 @@ import { toast } from "react-toastify";
 import {
   useGetMedicinesQuery,
   useGetIllnessesQuery,
+  useGetLinksQuery,
   useLinkMutation,
 } from "../api/api";
-import { Medicine, Illness } from "../types";
+import type { Medicine, Illness, Link } from "../types";
 
 export default function Linker() {
   const { data: meds = [] } = useGetMedicinesQuery();
   const { data: ills = [] } = useGetIllnessesQuery();
+  const { data: links = [] } = useGetLinksQuery(); // Existing links
   const [link] = useLinkMutation();
 
   const [medSearch, setMedSearch] = useState("");
@@ -38,8 +40,22 @@ export default function Linker() {
     [ills, illSearch]
   );
 
+  // Detect if a selected pairing already exists
+  const duplicateExists = useMemo(() => {
+    return Boolean(
+      selectedMed &&
+        selectedIll &&
+        links.some(
+          (l: Link) =>
+            (l.medicineId === selectedMed.id) && (l.illnessId === selectedIll.id)
+        )
+    );
+  }, [links, selectedMed, selectedIll]);
+
+  console.log(links);
+
   const handleLink = async () => {
-    if (!selectedMed || !selectedIll) return;
+    if (!selectedMed || !selectedIll || duplicateExists) return;
     await link({
       medicineId: selectedMed.id,
       illnessId: selectedIll.id,
@@ -55,14 +71,14 @@ export default function Linker() {
     <Card>
       <h3 className="text-lg font-semibold mb-4">Match Medicine ↔ Illness</h3>
       <div className="grid gap-6 md:grid-cols-2">
-        {/* Medicine section */}
+        {/* Medicine Search & Select */}
         <div>
           <label className="block text-sm font-medium mb-1">Medicine</label>
           <input
             className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300"
+            placeholder="Search medicine..."
             value={medSearch}
             onChange={(e) => setMedSearch(e.target.value)}
-            placeholder="Search medicine..."
           />
           {medSearch.trim() && (
             <ul className="mt-2 max-h-40 overflow-auto border rounded bg-white">
@@ -84,14 +100,14 @@ export default function Linker() {
           )}
         </div>
 
-        {/* Illness section */}
+        {/* Illness Search & Select */}
         <div>
           <label className="block text-sm font-medium mb-1">Illness</label>
           <input
             className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300"
+            placeholder="Search illness..."
             value={illSearch}
             onChange={(e) => setIllSearch(e.target.value)}
-            placeholder="Search illness..."
           />
           {illSearch.trim() && (
             <ul className="mt-2 max-h-40 overflow-auto border rounded bg-white">
@@ -116,11 +132,15 @@ export default function Linker() {
 
       <button
         className="mt-4 px-5 py-2 bg-green-600 text-white font-semibold rounded disabled:opacity-50"
-        disabled={!selectedMed || !selectedIll}
+        disabled={!selectedMed || !selectedIll || duplicateExists}
         onClick={handleLink}
       >
         Link
       </button>
+
+      {duplicateExists && (
+        <p className="mt-2 text-red-600">Link already exists.</p>
+      )}
     </Card>
   );
 }
