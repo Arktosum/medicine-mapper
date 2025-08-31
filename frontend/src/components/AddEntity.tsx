@@ -1,38 +1,74 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { toast } from "react-toastify";
-import { useAddIllnessMutation, useAddMedicineMutation } from "../api/api";
+import {
+  useAddIllnessMutation,
+  useAddMedicineMutation,
+  useGetIllnessesQuery,
+  useGetMedicinesQuery,
+} from "../api/api";
 import Card from "./Card";
 
 export function AddMedicine() {
   const [name, setName] = useState("");
+  const trimmedLower = name.trim().toLowerCase();
+
+  const { data: meds = [] } = useGetMedicinesQuery();
   const [addMedicine, { isLoading }] = useAddMedicineMutation();
+
+  const hasExact = useMemo(
+    () => meds.some((m) => m.name.toLowerCase() === trimmedLower),
+    [meds, trimmedLower]
+  );
+
+  const topMatch = useMemo(() => {
+    if (!trimmedLower || hasExact) return null;
+    return (
+      meds.find((m) => m.name.toLowerCase().includes(trimmedLower))?.name ??
+      null
+    );
+  }, [meds, trimmedLower, hasExact]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!trimmedLower || hasExact) return;
     try {
       await addMedicine({ name: name.trim() }).unwrap();
       toast.success("Medicine added");
       setName("");
-    } catch (e) {
+    } catch {
       toast.error("Failed to add medicine");
     }
   };
+
   return (
     <Card>
       <h3 className="text-lg font-semibold mb-3">Add Medicine</h3>
-      <form onSubmit={submit} className="flex gap-2">
-        <input
-          className="input"
-          placeholder="e.g., Abroma Augusta"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button
-          className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
-          disabled={isLoading}
-        >
-          Add
-        </button>
+      <form onSubmit={submit} className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <input
+            className="input flex-1"
+            placeholder="e.g., Abroma Augusta"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={isLoading || hasExact}
+          >
+            Add
+          </button>
+        </div>
+        {hasExact && (
+          <p className="text-red-600 text-sm">
+            “{name.trim()}” already exists!
+          </p>
+        )}
+        {!hasExact && topMatch && (
+          <p className="text-yellow-700 text-sm">
+            “{topMatch}” already exists!
+          </p>
+        )}
       </form>
     </Card>
   );
@@ -40,34 +76,68 @@ export function AddMedicine() {
 
 export function AddIllness() {
   const [name, setName] = useState("");
+  const trimmedLower = name.trim().toLowerCase();
+
+  const { data: ills = [] } = useGetIllnessesQuery();
   const [addIllness, { isLoading }] = useAddIllnessMutation();
+
+  // Exact match check
+  const hasExact = useMemo(
+    () => ills.some((i) => i.name.toLowerCase() === trimmedLower),
+    [ills, trimmedLower]
+  );
+
+  // Find first substring match (top suggestion)
+  const topMatch = useMemo(() => {
+    if (!trimmedLower || hasExact) return null;
+    return (
+      ills.find((i) => i.name.toLowerCase().includes(trimmedLower))?.name ??
+      null
+    );
+  }, [ills, trimmedLower, hasExact]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim()) return;
+    if (!trimmedLower || hasExact) return;
+
     try {
       await addIllness({ name: name.trim() }).unwrap();
       toast.success("Illness added");
       setName("");
-    } catch (e) {
+    } catch {
       toast.error("Failed to add illness");
     }
   };
+
   return (
     <Card>
       <h3 className="text-lg font-semibold mb-3">Add Illness</h3>
-      <form onSubmit={submit} className="flex gap-2">
-        <input
-          className="input"
-          placeholder="e.g., Migraine"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button
-          className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition"
-          disabled={isLoading}
-        >
-          Add
-        </button>
+      <form onSubmit={submit} className="flex flex-col gap-2">
+        <div className="flex gap-2">
+          <input
+            className="input flex-1"
+            placeholder="e.g., Migraine"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+            disabled={isLoading || hasExact}
+          >
+            Add
+          </button>
+        </div>
+        {hasExact && (
+          <p className="text-red-600 text-sm">
+            “{name.trim()}” already exists!
+          </p>
+        )}
+        {!hasExact && topMatch && (
+          <p className="text-yellow-700 text-sm">
+            “{topMatch}” already exists!
+          </p>
+        )}
       </form>
     </Card>
   );
