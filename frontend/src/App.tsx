@@ -16,16 +16,7 @@ export default function App() {
         <Linker />
         <Search />
       </main>
-      <Footer />
     </div>
   );
 }
 
-function Footer() {
-  return (
-    <footer className="py-8 text-center text-xs text-slate-500">
-      Built with React + TypeScript, Redux Toolkit (RTK Query), Tailwind,
-      Express. ✨
-    </footer>
-  );
-}

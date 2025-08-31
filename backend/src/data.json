@@ -19,12 +19,48 @@
     {
       "id": "ShfuzGV17tJX40oST_O02",
       "name": "penciflora"
+    },
+    {
+      "id": "6_2on9aQch2OJNOGM81dh",
+      "name": "Tellurium"
+    },
+    {
+      "id": "OcLyxGhKa50hr-Fhsuhr9",
+      "name": "ampelopsis quinquefolia"
+    },
+    {
+      "id": "3JKs9ney_ps1fM0b7s8us",
+      "name": "tinospora"
     }
   ],
   "illnesses": [
     {
       "id": "eF77D3r76DlvCgmVQeoEX",
       "name": "Migraine"
+    },
+    {
+      "id": "02hp-216Pwk56j8FnrVDQ",
+      "name": "sacrum"
+    },
+    {
+      "id": "AZtw0sjTE2cRN43BAK0zA",
+      "name": "sciatica"
+    },
+    {
+      "id": "p68EONlVsSXCIWAQiJ6p0",
+      "name": "vomiting"
+    },
+    {
+      "id": "tP_IpdmgVn6NbtrBKD9b3",
+      "name": "diarrhea"
+    },
+    {
+      "id": "PSKflck2d_MHupZBDocmO",
+      "name": "abdomen"
+    },
+    {
+      "id": "r06c8i4eWRKCObt5su0ms",
+      "name": "diabetes"
     }
   ],
   "links": [
@@ -35,6 +71,18 @@
     {
       "medicineId": "ShfuzGV17tJX40oST_O02",
       "illnessId": "eF77D3r76DlvCgmVQeoEX"
+    },
+    {
+      "medicineId": "6_2on9aQch2OJNOGM81dh",
+      "illnessId": "AZtw0sjTE2cRN43BAK0zA"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "illnessId": "p68EONlVsSXCIWAQiJ6p0"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "illnessId": "r06c8i4eWRKCObt5su0ms"
     }
   ]
 }
