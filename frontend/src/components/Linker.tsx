@@ -52,7 +52,6 @@ export default function Linker() {
     );
   }, [links, selectedMed, selectedIll]);
 
-  console.log(links);
 
   const handleLink = async () => {
     if (!selectedMed || !selectedIll || duplicateExists) return;
@@ -61,10 +60,10 @@ export default function Linker() {
       illnessId: selectedIll.id,
     }).unwrap();
     toast.success(`Linked "${selectedMed.name}" with "${selectedIll.name}"`);
-    setSelectedMed(null);
-    setSelectedIll(null);
-    setMedSearch("");
-    setIllSearch("");
+    // setSelectedMed(null);
+    // setSelectedIll(null);
+    // setMedSearch("");
+    // setIllSearch("");
   };
 
   return (
