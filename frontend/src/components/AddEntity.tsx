@@ -1,9 +1,9 @@
 import { useState, useMemo } from "react";
 import { toast } from "react-toastify";
 import {
-  useAddIllnessMutation,
+  useAddDiseaseMutation,
   useAddMedicineMutation,
-  useGetIllnessesQuery,
+  useGetDiseasesQuery,
   useGetMedicinesQuery,
 } from "../api/api";
 import Card from "./Card";
@@ -46,17 +46,17 @@ export function AddMedicine() {
       <form onSubmit={submit} className="flex flex-col gap-2">
         <div className="flex gap-2">
           <input
-            className="input flex-1"
+            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
             placeholder="e.g., Abroma Augusta"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
             type="submit"
-            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+            className="btn bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-sm"
             disabled={isLoading || hasExact}
           >
-            Add
+            ADD
           </button>
         </div>
         {hasExact && (
@@ -74,12 +74,12 @@ export function AddMedicine() {
   );
 }
 
-export function AddIllness() {
+export function Adddisease() {
   const [name, setName] = useState("");
   const trimmedLower = name.trim().toLowerCase();
 
-  const { data: ills = [] } = useGetIllnessesQuery();
-  const [addIllness, { isLoading }] = useAddIllnessMutation();
+  const { data: ills = [] } = useGetDiseasesQuery();
+  const [adddisease, { isLoading }] = useAddDiseaseMutation();
 
   // Exact match check
   const hasExact = useMemo(
@@ -101,21 +101,21 @@ export function AddIllness() {
     if (!trimmedLower || hasExact) return;
 
     try {
-      await addIllness({ name: name.trim() }).unwrap();
-      toast.success("Illness added");
+      await adddisease({ name: name.trim() }).unwrap();
+      toast.success("disease added");
       setName("");
     } catch {
-      toast.error("Failed to add illness");
+      toast.error("Failed to add disease");
     }
   };
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold mb-3">Add Illness</h3>
+      <h3 className="text-lg font-semibold mb-3">Add disease</h3>
       <form onSubmit={submit} className="flex flex-col gap-2">
         <div className="flex gap-2">
           <input
-            className="input flex-1"
+            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
             placeholder="e.g., Migraine"
             value={name}
             onChange={(e) => setName(e.target.value)}

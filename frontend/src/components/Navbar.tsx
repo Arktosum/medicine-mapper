@@ -16,18 +16,6 @@ export default function Navbar() {
         <NavLink to="/" className="text-xl font-bold">
           Home
         </NavLink>
-        <div className="space-x-4">
-          <NavLink
-            to="/edit"
-            className={({ isActive }) =>
-              `text-gray-700 hover:text-blue-600 ${
-                isActive ? "font-semibold text-blue-600" : ""
-              }`
-            }
-          >
-            Edit Entries
-          </NavLink>
-        </div>
       </div>
     </nav>
   );

@@ -1,79 +1,275 @@
-import { useEffect, useState } from "react";
+// SearchLinker.tsx
+import { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import Card from "./Card";
-import { useLazySearchQuery } from "../api/api";
+import {
+  useGetMedicinesQuery,
+  useGetDiseasesQuery,
+  useGetLinksQuery,
+  useLazySearchQuery,
+  useUpdateMedicineMutation,
+  useUpdateDiseaseMutation,
+  useUnlinkMutation,
+  useDeleteMedicineMutation,
+  useDeleteDiseaseMutation,
+} from "../api/api";
+import type { Medicine, Disease } from "../types";
 
-export default function Search() {
-  const [type, setType] = useState<"medicine" | "illness">("medicine");
-  const [q, setQ] = useState("");
-  const [trigger, { data, isFetching }] = useLazySearchQuery();
+export default function SearchLinker(): JSX.Element {
+  const [type, setType] = useState<"medicine" | "disease">("medicine");
+  const [query, setQuery] = useState("");
+  const [debouncedQ, setDebouncedQ] = useState("");
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+
+  const { data: meds = [] } = useGetMedicinesQuery();
+  const { data: ills = [] } = useGetDiseasesQuery();
+  const { data: links = [], refetch: refetchLinks } = useGetLinksQuery();
+
+  const [triggerSearch, { data: searchRes, isFetching: searching }] =
+    useLazySearchQuery();
+
+  const [updateMed] = useUpdateMedicineMutation();
+  const [updateIll] = useUpdateDiseaseMutation();
+  const [unlinkM] = useUnlinkMutation();
+  const [deleteMed] = useDeleteMedicineMutation();
+  const [deleteIll] = useDeleteDiseaseMutation();
+
+  // debounce query
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQ(query.trim()), 300);
+    return () => clearTimeout(t);
+  }, [query]);
 
   useEffect(() => {
-    if (q.trim()) trigger({ type, q });
-  }, [q, trigger, type]);
+    if (debouncedQ) triggerSearch({ type, q: debouncedQ });
+  }, [debouncedQ, type, triggerSearch]);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!q.trim()) return;
-    trigger({ type, q: q.trim() });
+  const matches = searchRes?.matches ?? [];
+
+  const selectedItem = useMemo(() => {
+    if (!selectedId) return null;
+    return (
+      (type === "medicine"
+        ? meds.find((m) => m.id === selectedId)
+        : ills.find((i) => i.id === selectedId)) || null
+    );
+  }, [selectedId, meds, ills, type]);
+
+  const selectedLinks = useMemo(() => {
+    if (!selectedId) return [];
+    if (type === "medicine") {
+      return links
+        .filter((l) => l.medicineId === selectedId)
+        .map((l) => ills.find((i) => i.id === l.diseaseId))
+        .filter(Boolean) as Disease[];
+    } else {
+      return links
+        .filter((l) => l.diseaseId === selectedId)
+        .map((l) => meds.find((m) => m.id === l.medicineId))
+        .filter(Boolean) as Medicine[];
+    }
+  }, [selectedId, links, meds, ills, type]);
+
+  const handleSelect = (id: string) => {
+    setSelectedId(id);
+    setEditing(false);
+    setEditingName(null);
+  };
+
+  const startEdit = () => {
+    if (!selectedItem) return;
+    setEditing(true);
+    setEditingName(selectedItem.name);
+  };
+
+  const saveName = async () => {
+    if (!selectedItem || !editingName) return;
+    const newName = editingName.trim();
+    if (!newName) {
+      toast.error("Name cannot be empty");
+      return;
+    }
+    try {
+      if (type === "medicine") {
+        await updateMed({ id: selectedItem.id, name: newName }).unwrap();
+      } else {
+        await updateIll({ id: selectedItem.id, name: newName }).unwrap();
+      }
+      toast.success("Name updated");
+      setEditing(false);
+      setEditingName(null);
+      refetchLinks();
+    } catch (e) {
+      toast.error("Update failed");
+    }
+  };
+
+  const cancelEdit = () => {
+    setEditing(false);
+    setEditingName(null);
+  };
+
+  const handleUnlink = async (targetId: string) => {
+    if (!selectedId) return;
+    const medicineId = type === "medicine" ? selectedId : targetId;
+    const diseaseId = type === "disease" ? selectedId : targetId;
+    try {
+      await unlinkM({ medicineId, diseaseId }).unwrap();
+      toast.success("Unlinked");
+      refetchLinks();
+    } catch (e) {
+      toast.error("Unlink failed");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedItem) return;
+    const confirmMsg = `Delete ${type} "${selectedItem.name}"?\nAll its links will also be deleted.`;
+    if (!confirm(confirmMsg)) return;
+    try {
+      if (type === "medicine") {
+        await deleteMed(selectedItem.id).unwrap();
+      } else {
+        await deleteIll(selectedItem.id).unwrap();
+      }
+      toast.success(`${type} deleted with links`);
+      setSelectedId(null);
+      setEditing(false);
+      setEditingName(null);
+      refetchLinks();
+    } catch (e) {
+      toast.error("Delete failed");
+    }
   };
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold mb-3">Search</h3>
-      <form onSubmit={onSubmit} className="flex flex-wrap gap-2 items-center">
-        <select
-          className="input w-40"
-          value={type}
-          onChange={(e) => setType(e.target.value as "medicine" | "illness")}
-        >
-          <option value="medicine">By Medicine</option>
-          <option value="illness">By Illness</option>
-        </select>
-        <input
-          className="input flex-1 min-w-[240px]"
-          placeholder={
-            type === "medicine" ? "e.g., Abroma Augusta" : "e.g., Fever"
-          }
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-        />
-        <button className="inline-flex items-center justify-center bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold px-5 py-2 rounded-lg shadow-md transition">
-          Search
-        </button>
-      </form>
-
-      {isFetching && (
-        <p className="mt-3 text-sm text-slate-500">Searching...</p>
-      )}
-
-      {data && (
-        <div className="mt-4 grid md:grid-cols-2 gap-4">
-          <div>
-            <h4 className="font-semibold mb-2">
-              Matches ({data.matches.length})
-            </h4>
-            <ul className="space-y-1">
-              {data.matches.map((m) => (
-                <li key={m.id} className="chip">
-                  {m.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-semibold mb-2">
-              Related ({data.related.length})
-            </h4>
-            <ul className="space-y-1">
-              {data.related.map((r) => (
-                <li key={r.id} className="chip">
-                  {r.name}
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold">Search & Manage Links</h3>
+        <div className="flex items-center gap-2">
+          <label className="text-sm mr-1">Search by</label>
+          <select
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value as "medicine" | "disease");
+              setSelectedId(null);
+              setQuery("");
+            }}
+            className="px-2 py-1 border rounded"
+          >
+            <option value="medicine">Medicine</option>
+            <option value="disease">Disease</option>
+          </select>
         </div>
-      )}
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {/* Left: search */}
+        <div className="md:col-span-1">
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={`Search ${type}...`}
+            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
+          />
+          <ul className="mt-2 max-h-48 overflow-auto border rounded bg-white divide-y">
+            {matches.map((m) => (
+              <li
+                key={m.id}
+                onClick={() => handleSelect(m.id)}
+                className={`px-3 py-2 cursor-pointer hover:bg-blue-50 ${
+                  selectedId === m.id ? "bg-blue-100 font-semibold" : ""
+                }`}
+              >
+                {m.name}
+              </li>
+            ))}
+            {matches.length === 0 && debouncedQ && !searching && (
+              <li className="px-3 py-2 text-gray-500">No matches</li>
+            )}
+          </ul>
+        </div>
+
+        {/* Middle: selected + edit/delete */}
+        <div className="md:col-span-1">
+          {selectedItem ? (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="font-semibold">{selectedItem.name}</div>
+                {!editing && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={startEdit}
+                      className="px-3 py-1 text-sm border rounded hover:bg-gray-50"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDelete}
+                      className="px-3 py-1 text-sm border rounded text-red-600 hover:bg-red-50"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
+              </div>
+              {editing && (
+                <div className="mt-3">
+                  <input
+                    value={editingName ?? ""}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    className="w-full px-3 py-2 border rounded"
+                  />
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      onClick={saveName}
+                      className="px-3 py-1 bg-green-600 text-white rounded text-sm"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={cancelEdit}
+                      className="px-3 py-1 border rounded text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-sm text-gray-500">
+              Select an item from search
+            </div>
+          )}
+        </div>
+
+        {/* Right: linked items */}
+        <div className="md:col-span-1">
+          <div className="text-sm font-medium mb-2">Linked</div>
+          <ul className="max-h-80 overflow-auto border rounded bg-white divide-y">
+            {selectedLinks.length === 0 && (
+              <li className="px-3 py-3 text-gray-500">No links</li>
+            )}
+            {selectedLinks.map((item) => (
+              <li
+                key={item.id}
+                className="px-3 py-2 flex items-center justify-between"
+              >
+                <div>{item.name}</div>
+                <button
+                  onClick={() => handleUnlink(item.id)}
+                  className="px-2 py-1 text-sm border rounded hover:bg-red-50"
+                >
+                  Unlink
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </Card>
   );
 }

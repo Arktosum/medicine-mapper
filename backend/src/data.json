@@ -5,14 +5,6 @@
       "name": "abroma augusta"
     },
     {
-      "id": "VfTMLK_cOgjki91GtmX9m",
-      "name": "Abroma augustas"
-    },
-    {
-      "id": "HdLtekq9hK7XbBLac12ao",
-      "name": "abroma augustass"
-    },
-    {
       "id": "zfdeNQX_X2_msPFmT5bK5",
       "name": "techniflora"
     },
@@ -83,6 +75,14 @@
     {
       "medicineId": "3JKs9ney_ps1fM0b7s8us",
       "illnessId": "r06c8i4eWRKCObt5su0ms"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "02hp-216Pwk56j8FnrVDQ"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "eF77D3r76DlvCgmVQeoEX"
     }
   ]
 }

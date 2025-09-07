@@ -3,22 +3,23 @@ import Card from "./Card";
 import { toast } from "react-toastify";
 import {
   useGetMedicinesQuery,
-  useGetIllnessesQuery,
+  useGetDiseasesQuery,
   useGetLinksQuery,
   useLinkMutation,
 } from "../api/api";
-import type { Medicine, Illness, Link } from "../types";
+
+import type { Medicine, Disease, Link } from "../types";
 
 export default function Linker() {
   const { data: meds = [] } = useGetMedicinesQuery();
-  const { data: ills = [] } = useGetIllnessesQuery();
+  const { data: ills = [] } = useGetDiseasesQuery();
   const { data: links = [] } = useGetLinksQuery(); // Existing links
   const [link] = useLinkMutation();
 
   const [medSearch, setMedSearch] = useState("");
   const [illSearch, setIllSearch] = useState("");
   const [selectedMed, setSelectedMed] = useState<Medicine | null>(null);
-  const [selectedIll, setSelectedIll] = useState<Illness | null>(null);
+  const [selectedIll, setSelectedIll] = useState<Disease | null>(null);
 
   const filteredMeds = useMemo(
     () =>
@@ -47,17 +48,16 @@ export default function Linker() {
         selectedIll &&
         links.some(
           (l: Link) =>
-            (l.medicineId === selectedMed.id) && (l.illnessId === selectedIll.id)
+            l.medicineId === selectedMed.id && l.diseaseId === selectedIll.id
         )
     );
   }, [links, selectedMed, selectedIll]);
-
 
   const handleLink = async () => {
     if (!selectedMed || !selectedIll || duplicateExists) return;
     await link({
       medicineId: selectedMed.id,
-      illnessId: selectedIll.id,
+      diseaseId: selectedIll.id,
     }).unwrap();
     toast.success(`Linked "${selectedMed.name}" with "${selectedIll.name}"`);
     // setSelectedMed(null);
@@ -68,7 +68,7 @@ export default function Linker() {
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold mb-4">Match Medicine ↔ Illness</h3>
+      <h3 className="text-lg font-semibold mb-4">Match Medicine ↔ disease</h3>
       <div className="grid gap-6 md:grid-cols-2">
         {/* Medicine Search & Select */}
         <div>
@@ -99,12 +99,12 @@ export default function Linker() {
           )}
         </div>
 
-        {/* Illness Search & Select */}
+        {/* disease Search & Select */}
         <div>
-          <label className="block text-sm font-medium mb-1">Illness</label>
+          <label className="block text-sm font-medium mb-1">disease</label>
           <input
             className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300"
-            placeholder="Search illness..."
+            placeholder="Search disease..."
             value={illSearch}
             onChange={(e) => setIllSearch(e.target.value)}
           />
@@ -122,7 +122,7 @@ export default function Linker() {
                 </li>
               ))}
               {filteredIlls.length === 0 && (
-                <li className="px-3 py-1 text-gray-500">No illnesses found</li>
+                <li className="px-3 py-1 text-gray-500">No diseasees found</li>
               )}
             </ul>
           )}

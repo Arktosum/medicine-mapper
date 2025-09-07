@@ -1,5 +1,5 @@
 import { ToastContainer } from "react-toastify";
-import { AddIllness, AddMedicine } from "./components/AddEntity";
+import { Adddisease, AddMedicine } from "./components/AddEntity";
 import "react-toastify/dist/ReactToastify.css";
 import Linker from "./components/Linker";
 import Search from "./components/Search";
@@ -11,7 +11,7 @@ export default function App() {
       <main className="max-w-5xl mx-auto px-4 py-6 grid gap-4">
         <section className="grid md:grid-cols-2 gap-4">
           <AddMedicine />
-          <AddIllness />
+          <Adddisease />
         </section>
         <Linker />
         <Search />
@@ -19,4 +19,3 @@ export default function App() {
     </div>
   );
 }
-

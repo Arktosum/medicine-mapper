@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { Illness, Link, Medicine, SearchResponse } from '../types';
+import { Disease, Link, Medicine, SearchResponse } from '../types';
 
 const base = 'http://localhost:3005/api'
 
@@ -40,7 +40,7 @@ export const api = createApi({
             ],
         }),
 
-        getIllnesses: builder.query<Illness[], void>({
+        getDiseases: builder.query<Disease[], void>({
             query: () => '/illnesses',
             providesTags: res =>
                 res
@@ -50,11 +50,11 @@ export const api = createApi({
                     ]
                     : [{ type: 'Illness', id: 'LIST' }],
         }),
-        addIllness: builder.mutation<Illness, { name: string }>({
+        addDisease: builder.mutation<Disease, { name: string }>({
             query: body => ({ url: '/illnesses', method: 'POST', body }),
             invalidatesTags: [{ type: 'Illness', id: 'LIST' }],
         }),
-        updateIllness: builder.mutation<Illness, { id: string; name: string }>({
+        updateDisease: builder.mutation<Disease, { id: string; name: string }>({
             query: ({ id, name }) => ({ url: `/illnesses/${id}`, method: 'PUT', body: { name } }),
             invalidatesTags: (res, err, { id }) => [
                 { type: 'Illness', id },
@@ -62,7 +62,7 @@ export const api = createApi({
                 { type: 'Link', id: 'LIST' },
             ],
         }),
-        deleteIllness: builder.mutation<void, string>({
+        deleteDisease: builder.mutation<void, string>({
             query: id => ({ url: `/illnesses/${id}`, method: 'DELETE' }),
             invalidatesTags: (res, err, id) => [
                 { type: 'Illness', id },
@@ -71,7 +71,7 @@ export const api = createApi({
             ],
         }),
 
-        link: builder.mutation<{ ok: true }, { medicineId: string; illnessId: string }>({
+        link: builder.mutation<{ ok: true }, { medicineId: string; diseaseId: string }>({
             query: body => ({ url: '/links', method: 'POST', body }),
             invalidatesTags: [
                 { type: 'Medicine', id: 'LIST' },
@@ -80,7 +80,22 @@ export const api = createApi({
             ],
         }),
 
-        search: builder.query<SearchResponse, { type: 'medicine' | 'illness'; q: string }>({
+        unlink: builder.mutation<
+            { ok: true },
+            { medicineId: string; diseaseId: string }
+        >({
+            query: ({ medicineId, diseaseId }) => ({
+                url: `/links`,
+                method: 'DELETE',
+                params: { medicineId, diseaseId },
+            }),
+            invalidatesTags: [
+                { type: 'Link', id: 'LIST' },
+                { type: 'Medicine', id: 'LIST' },
+                { type: 'Illness', id: 'LIST' },
+            ],
+        }),
+        search: builder.query<SearchResponse, { type: 'medicine' | 'disease'; q: string }>({
             query: ({ type, q }) => `/search?type=${type}&q=${encodeURIComponent(q)}`,
         }),
         getLinks: builder.query<Link[], void>({
@@ -96,11 +111,12 @@ export const {
     useAddMedicineMutation,
     useUpdateMedicineMutation,
     useDeleteMedicineMutation,
-    useGetIllnessesQuery,
-    useAddIllnessMutation,
-    useUpdateIllnessMutation,
-    useDeleteIllnessMutation,
+    useGetDiseasesQuery,
+    useAddDiseaseMutation,
+    useUpdateDiseaseMutation,
+    useDeleteDiseaseMutation,
     useLinkMutation,
+    useUnlinkMutation,
     useLazySearchQuery,
     useGetLinksQuery
 } = api

@@ -13,7 +13,7 @@ const DATA_PATH = path.resolve('./src/data.json')
 
 interface Medicine { id: string; name: string }
 interface Illness { id: string; name: string }
-interface Link { medicineId: string; illnessId: string }
+interface Link { medicineId: string; diseaseId: string }
 interface DB { medicines: Medicine[]; illnesses: Illness[]; links: Link[] }
 
 function readDB(): DB {
@@ -61,14 +61,14 @@ app.post('/api/illnesses', (req, res) => {
 })
 
 app.post('/api/links', (req, res) => {
-    const { medicineId, illnessId } = req.body as { medicineId?: string; illnessId?: string }
-    if (!medicineId || !illnessId) return res.status(400).json({ error: 'medicineId & illnessId required' })
+    const { medicineId, diseaseId } = req.body as { medicineId?: string; diseaseId?: string }
+    if (!medicineId || !diseaseId) return res.status(400).json({ error: 'medicineId & diseaseId required' })
     const db = readDB()
     const m = db.medicines.find(x => x.id === medicineId)
-    const i = db.illnesses.find(x => x.id === illnessId)
+    const i = db.illnesses.find(x => x.id === diseaseId)
     if (!m || !i) return res.status(404).json({ error: 'medicine or illness not found' })
-    const exists = db.links.some(l => l.medicineId === medicineId && l.illnessId === illnessId)
-    if (!exists) db.links.push({ medicineId, illnessId })
+    const exists = db.links.some(l => l.medicineId === medicineId && l.diseaseId === diseaseId)
+    if (!exists) db.links.push({ medicineId, diseaseId })
     writeDB(db)
     res.json({ ok: true })
 })
@@ -85,7 +85,7 @@ app.get('/api/search', (req, res) => {
         for (const m of matches) {
             const links = db.links.filter(l => l.medicineId === m.id)
             for (const l of links) {
-                const ill = db.illnesses.find(i => i.id === l.illnessId)
+                const ill = db.illnesses.find(i => i.id === l.diseaseId)
                 if (ill) relatedMap.set(ill.id, ill)
             }
         }
@@ -94,7 +94,7 @@ app.get('/api/search', (req, res) => {
         const matches = db.illnesses.filter(i => i.name.toLowerCase().includes(q))
         const relatedMap = new Map<string, Medicine>()
         for (const i of matches) {
-            const links = db.links.filter(l => l.illnessId === i.id)
+            const links = db.links.filter(l => l.diseaseId === i.id)
             for (const l of links) {
                 const med = db.medicines.find(m => m.id === l.medicineId)
                 if (med) relatedMap.set(med.id, med)
@@ -142,7 +142,7 @@ app.put('/api/illnesses/:id', (req, res) => {
 app.delete('/api/illnesses/:id', (req, res) => {
     const { id } = req.params
     const db = readDB()
-    db.links = db.links.filter((l) => l.illnessId !== id)
+    db.links = db.links.filter((l) => l.diseaseId !== id)
     db.illnesses = db.illnesses.filter((i) => i.id !== id)
     writeDB(db)
     res.status(204).send()
@@ -151,6 +151,26 @@ app.delete('/api/illnesses/:id', (req, res) => {
 app.get('/api/links', (req, res) => {
     const db = readDB();
     res.json(db.links);
+});
+
+
+
+// Delete a specific link
+app.delete('/api/links', (req, res) => {
+    const { medicineId, diseaseId } = req.query as { medicineId?: string; diseaseId?: string };
+    if (!medicineId || !diseaseId) {
+        return res.status(400).json({ error: 'medicineId & diseaseId required' });
+    }
+
+    const db = readDB();
+    const before = db.links.length;
+    db.links = db.links.filter(l => !(l.medicineId === medicineId && l.diseaseId === diseaseId));
+    if (db.links.length === before) {
+        return res.status(404).json({ error: 'Link not found' });
+    }
+
+    writeDB(db);
+    res.json({ ok: true });
 });
 
 
