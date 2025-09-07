@@ -74,7 +74,7 @@ export default function Linker() {
         <div>
           <label className="block text-sm font-medium mb-1">Medicine</label>
           <input
-            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300"
+            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300 bg-[#e7f8eb]"
             placeholder="Search medicine..."
             value={medSearch}
             onChange={(e) => setMedSearch(e.target.value)}
@@ -101,9 +101,9 @@ export default function Linker() {
 
         {/* disease Search & Select */}
         <div>
-          <label className="block text-sm font-medium mb-1">disease</label>
+          <label className="block text-sm font-medium mb-1">Disease</label>
           <input
-            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300"
+            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300 bg-[#e7f8eb]"
             placeholder="Search disease..."
             value={illSearch}
             onChange={(e) => setIllSearch(e.target.value)}

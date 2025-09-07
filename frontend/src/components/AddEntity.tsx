@@ -46,17 +46,17 @@ export function AddMedicine() {
       <form onSubmit={submit} className="flex flex-col gap-2">
         <div className="flex gap-2">
           <input
-            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
+            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200 bg-cyan-100"
             placeholder="e.g., Abroma Augusta"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
             type="submit"
-            className="btn bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-sm"
+            className="btn bg-blue-500 hover:bg-blue-700 text-white px-5 py-2 rounded-sm text-sm"
             disabled={isLoading || hasExact}
           >
-            ADD
+            Add
           </button>
         </div>
         {hasExact && (
@@ -111,18 +111,18 @@ export function Adddisease() {
 
   return (
     <Card>
-      <h3 className="text-lg font-semibold mb-3">Add disease</h3>
+      <h3 className="text-lg font-semibold mb-3">Add Disease</h3>
       <form onSubmit={submit} className="flex flex-col gap-2">
         <div className="flex gap-2">
           <input
-            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
+            className="input flex-1 w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200 bg-cyan-100"
             placeholder="e.g., Migraine"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <button
             type="submit"
-            className="btn bg-blue-600 hover:bg-blue-700 text-white"
+            className="btn bg-blue-500 hover:bg-blue-700 text-white px-5 py-2 rounded-sm text-sm"
             disabled={isLoading || hasExact}
           >
             Add

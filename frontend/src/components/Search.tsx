@@ -47,6 +47,7 @@ export default function SearchLinker(): JSX.Element {
   }, [debouncedQ, type, triggerSearch]);
 
   const matches = searchRes?.matches ?? [];
+  const related = searchRes?.related ?? [];
 
   const selectedItem = useMemo(() => {
     if (!selectedId) return null;
@@ -172,7 +173,7 @@ export default function SearchLinker(): JSX.Element {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${type}...`}
-            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200"
+            className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-200 bg-[#fbffd3]"
           />
           <ul className="mt-2 max-h-48 overflow-auto border rounded bg-white divide-y">
             {matches.map((m) => (
@@ -190,6 +191,24 @@ export default function SearchLinker(): JSX.Element {
               <li className="px-3 py-2 text-gray-500">No matches</li>
             )}
           </ul>
+
+          {/* Related list (preserved) */}
+          {related.length > 0 && (
+            <div className="mt-3">
+              <div className="text-sm font-medium">Related</div>
+              <ul className="mt-1 border rounded bg-white divide-y max-h-40 overflow-auto">
+                {related.map((r) => (
+                  <li
+                    key={r.id}
+                    onClick={() => handleSelect(r.id)}
+                    className="px-3 py-2 cursor-pointer hover:bg-green-50"
+                  >
+                    {r.name}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {/* Middle: selected + edit/delete */}
@@ -220,7 +239,7 @@ export default function SearchLinker(): JSX.Element {
                   <input
                     value={editingName ?? ""}
                     onChange={(e) => setEditingName(e.target.value)}
-                    className="w-full px-3 py-2 border rounded"
+                    className="w-full px-3 py-2 border rounded bg-[#faf1da]"
                   />
                   <div className="mt-2 flex gap-2">
                     <button
