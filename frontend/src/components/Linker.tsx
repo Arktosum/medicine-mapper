@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import Card from "./Card";
 import { toast } from "react-toastify";
 import {
@@ -53,7 +53,7 @@ export default function Linker() {
     );
   }, [links, selectedMed, selectedIll]);
 
-  const handleLink = async () => {
+  const handleLink = useCallback(async () => {
     if (!selectedMed || !selectedIll || duplicateExists) return;
     await link({
       medicineId: selectedMed.id,
@@ -64,13 +64,24 @@ export default function Linker() {
     // setSelectedIll(null);
     // setMedSearch("");
     // setIllSearch("");
-  };
+  }, [duplicateExists, link, selectedIll, selectedMed]);
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      handleLink();
-    }
-  };
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        console.log("enter");
+        handleLink();
+      }
+    },
+    [handleLink]
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]); // empty deps => run once on mount, cleanup on unmount
 
   return (
     <Card>
