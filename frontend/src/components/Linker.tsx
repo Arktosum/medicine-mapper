@@ -66,6 +66,12 @@ export default function Linker() {
     // setIllSearch("");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleLink();
+    }
+  };
+
   return (
     <Card>
       <h3 className="text-lg font-semibold mb-4">Match Medicine ↔ disease</h3>
@@ -76,6 +82,7 @@ export default function Linker() {
           <input
             className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300 bg-[#e7f8eb]"
             placeholder="Search medicine..."
+            onKeyDown={handleKeyDown}
             value={medSearch}
             onChange={(e) => setMedSearch(e.target.value)}
           />
@@ -105,6 +112,7 @@ export default function Linker() {
           <input
             className="w-full px-3 py-2 border rounded focus:ring focus:ring-blue-300 bg-[#e7f8eb]"
             placeholder="Search disease..."
+            onKeyDown={handleKeyDown}
             value={illSearch}
             onChange={(e) => setIllSearch(e.target.value)}
           />

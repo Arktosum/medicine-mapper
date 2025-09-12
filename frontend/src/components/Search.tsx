@@ -147,22 +147,33 @@ export default function SearchLinker(): JSX.Element {
 
   return (
     <Card>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center gap-5  mb-4">
         <h3 className="text-lg font-semibold">Search & Manage Links</h3>
         <div className="flex items-center gap-2">
-          <label className="text-sm mr-1">Search by</label>
-          <select
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value as "medicine" | "disease");
+          <div
+            onClick={() => {
+              setType("medicine");
               setSelectedId(null);
               setQuery("");
             }}
-            className="px-2 py-1 border rounded"
+            className={`text-xl ${
+              type == "medicine" ? "bg-green-300" : "bg-gray-300"
+            } px-5 py-2 rounded-xl cursor-pointer`}
           >
-            <option value="medicine">Medicine</option>
-            <option value="disease">Disease</option>
-          </select>
+            Medicine
+          </div>
+          <div
+            onClick={() => {
+              setType("disease");
+              setSelectedId(null);
+              setQuery("");
+            }}
+            className={`text-xl ${
+              type == "disease" ? "bg-green-300" : "bg-gray-300"
+            } px-5 py-2 rounded-xl cursor-pointer`}
+          >
+            Disease
+          </div>
         </div>
       </div>
 
