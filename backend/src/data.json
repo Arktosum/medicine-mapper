@@ -83,6 +83,90 @@
     {
       "medicineId": "zTsIL4d9h1aFalAwzKo4e",
       "diseaseId": "eF77D3r76DlvCgmVQeoEX"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "AZtw0sjTE2cRN43BAK0zA"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "tP_IpdmgVn6NbtrBKD9b3"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "PSKflck2d_MHupZBDocmO"
+    },
+    {
+      "medicineId": "zTsIL4d9h1aFalAwzKo4e",
+      "diseaseId": "r06c8i4eWRKCObt5su0ms"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "02hp-216Pwk56j8FnrVDQ"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "eF77D3r76DlvCgmVQeoEX"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "AZtw0sjTE2cRN43BAK0zA"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "r06c8i4eWRKCObt5su0ms"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "PSKflck2d_MHupZBDocmO"
+    },
+    {
+      "medicineId": "ShfuzGV17tJX40oST_O02",
+      "diseaseId": "tP_IpdmgVn6NbtrBKD9b3"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "eF77D3r76DlvCgmVQeoEX"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "AZtw0sjTE2cRN43BAK0zA"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "r06c8i4eWRKCObt5su0ms"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "tP_IpdmgVn6NbtrBKD9b3"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "PSKflck2d_MHupZBDocmO"
+    },
+    {
+      "medicineId": "OcLyxGhKa50hr-Fhsuhr9",
+      "diseaseId": "02hp-216Pwk56j8FnrVDQ"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "diseaseId": "tP_IpdmgVn6NbtrBKD9b3"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "diseaseId": "PSKflck2d_MHupZBDocmO"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "diseaseId": "r06c8i4eWRKCObt5su0ms"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "diseaseId": "AZtw0sjTE2cRN43BAK0zA"
+    },
+    {
+      "medicineId": "3JKs9ney_ps1fM0b7s8us",
+      "diseaseId": "02hp-216Pwk56j8FnrVDQ"
     }
   ]
 }

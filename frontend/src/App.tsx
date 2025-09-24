@@ -3,6 +3,7 @@ import { Adddisease, AddMedicine } from "./components/AddEntity";
 import "react-toastify/dist/ReactToastify.css";
 import Linker from "./components/Linker";
 import Search from "./components/Search";
+import IntersectionFinder from "./components/IntersectionFinder";
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
         </section>
         <Linker />
         <Search />
+        <IntersectionFinder />
       </main>
     </div>
   );
